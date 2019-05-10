@@ -1,10 +1,10 @@
 import React from 'react';
-import Login from './login'
-import { store } from '../store/store';
-import { toggleLoginModal, signIn, toggleSignupModal } from '../store/actions';
-import GoogleAutucomplete from './google-autocomplete'
-import SignUp from './signUp';
-
+import Login from '../login'
+import { store } from '../../store/store';
+import { toggleLoginModal, signIn, toggleSignupModal } from '../../store/actions';
+import GoogleAutucomplete from '../google-autocomplete'
+import SignUp from '../signUp';
+import './navbar.css'
 
 export default class Navbar extends React.Component {
     constructor(props) {
@@ -14,17 +14,17 @@ export default class Navbar extends React.Component {
             loginModalShown: false,
             signUpModalShown: false
         };
-        
+
         store.subscribe(() => {
             let state = store.getState()
             console.log('subs', state, state.applicationState.applicationState)
             this.setState({
                 loginModalShown: state.applicationState.toggleLoginModal,
-                signUpModalShown:  state.applicationState.toggleSignupModal,
+                signUpModalShown: state.applicationState.toggleSignupModal,
                 user: state.applicationState.user
             });
         });
-    
+
     }
 
     showSignInModal = () => {
@@ -32,7 +32,6 @@ export default class Navbar extends React.Component {
 
     }
     showSignUpModal() {
-        console.log('here')
         store.dispatch(toggleSignupModal(true))
 
     }
@@ -78,16 +77,19 @@ export default class Navbar extends React.Component {
 
 
                     </div>
-                    <GoogleAutucomplete></GoogleAutucomplete>
+                    <div className="aligned-section">
+                        <GoogleAutucomplete></GoogleAutucomplete>
+                    </div>
+
 
                     <div className="navbar-end">
                         <div className="navbar-item">
                             {isConnected ? (
-                                <span> Welcome <strong> {username} </strong>
-                                <a className="button is-light" onClick={() => this.signOut()}>
-                                            Sign out
+                                <span className="aligned-section username">  <strong> {username} </strong>
+                                    <a className="button is-light" onClick={() => this.signOut()}>
+                                        Sign out
                                 </a></span>
-                                
+
                             ) : (
                                     <div className="buttons">
                                         <a className="button is-primary" onClick={this.showSignUpModal}>

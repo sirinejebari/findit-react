@@ -7,17 +7,10 @@ export default class GoogleAutucomplete extends React.Component {
         super(props)
         this.state = {
             q: '',
-            ready: !props.googleCallbackName,
             suggestions: []
         }
     }
 
-
-    loadKey = async() =>{
-        let data = await (await fetch('../keyfile.json'))
-        return data;
-
-    }
 
 
     updateInput = (e) => {
@@ -48,7 +41,6 @@ export default class GoogleAutucomplete extends React.Component {
 
     }
     handlePlaceSelect = (place) => {
-        console.log(place);
         this.setState({
             suggestions: []
         })

@@ -31,3 +31,19 @@
     transform: rotate(360deg);
   }
 }
+.map-container {
+  flex-direction: row;
+  display: flex;
+  justify-content: center;
+  padding: 16px
+}
+.default-view{
+  display: flex;
+  width: 100%;
+  align-items: center;
+  flex-direction: column
+}
+.main-map{
+  height: 50%;
+  width: 50%;
+}

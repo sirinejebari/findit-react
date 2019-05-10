@@ -4,10 +4,10 @@ import {
   signIn
 } from './store/actions'
 import { store } from './store/store'
-import Navbar from './components/navbar';
+import Navbar from './components/navbar/navbar';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
-
+import Map from './components/map/map'
 library.add(faSearch)
 //components
 // Log the initial state
@@ -33,6 +33,13 @@ function App() {
 
     <div className="App">
       <Navbar></Navbar>
+      <div className="map-container ">
+        <div className="default-view">
+          <p className="subtitle is-4">Opportunities in your area</p>
+          <div className="main-map card">
+            <Map ></Map>
+          </div></div>
+      </div>
     </div>
   );
 }
