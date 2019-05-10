@@ -2,7 +2,7 @@ import {ACTION_SIGNIN, ACTION_TOGGLE_LOGIN} from './actionTypes'
 export function signIn(text) {
   return {
     type: ACTION_SIGNIN,
-    isUserSignedIn: text
+    user: text
   }
 }
 

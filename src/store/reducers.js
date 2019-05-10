@@ -2,41 +2,39 @@ import { ACTION_SIGNIN, ACTION_TOGGLE_LOGIN } from "./actionTypes";
 import { combineReducers } from 'redux'
 
 const initialState = {
-  isUserSignedIn: false,
-  toggleLoginModal: false
+  applicationState: {}
 }
 
-function isUserSignedIn(state = false, action) {
+function applicationState(state = {}, action) {
   switch (action.type) {
     case ACTION_SIGNIN:
       return Object.assign({}, state, {
-        isUserSignedIn: action.isUserSignedIn
+        user: action.user
       })
-
-    default:
-      return state
-  }
-}
-
-function toggleModaleState(state = false, action) {
-  switch (action.type) {
-
-    case ACTION_TOGGLE_LOGIN:
+      case ACTION_TOGGLE_LOGIN:
       return  Object.assign({}, state, {
         toggleLoginModal: action.toggleLoginModal
       })
-      
-
     default:
       return state
   }
 }
+
+// function toggleModaleState(state = false, action) {
+//   switch (action.type) {
+
+    
+      
+
+//     default:
+//       return state
+//   }
+// }
 
 
 
 const findItApp = combineReducers({
-  isUserSignedIn,
-  toggleModaleState
+  applicationState
 })
 
 export default findItApp

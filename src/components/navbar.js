@@ -15,10 +15,10 @@ export default class Navbar extends React.Component {
         
         store.subscribe(() => {
             let state = store.getState()
-            console.log('subs', state, state.isUserSignedIn.isUserSignedIn)
+            console.log('subs', state, state.applicationState.applicationState)
             this.setState({
-                loginModalShown: state.toggleModaleState.toggleLoginModal,
-                user: state.isUserSignedIn.isUserSignedIn
+                loginModalShown: state.applicationState.toggleLoginModal,
+                user: state.applicationState.user
             });
         });
     
