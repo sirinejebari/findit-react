@@ -1,8 +1,9 @@
 import React from 'react';
 import Login from './login'
 import { store } from '../store/store';
-import { toggleLoginModal, signIn } from '../store/actions';
+import { toggleLoginModal, signIn, toggleSignupModal } from '../store/actions';
 import GoogleAutucomplete from './google-autocomplete'
+import SignUp from './signUp';
 
 
 export default class Navbar extends React.Component {
@@ -10,7 +11,8 @@ export default class Navbar extends React.Component {
         super(props);
         this.state = {
             user: '',
-            loginModalShown: false
+            loginModalShown: false,
+            signUpModalShown: false
         };
         
         store.subscribe(() => {
@@ -18,14 +20,20 @@ export default class Navbar extends React.Component {
             console.log('subs', state, state.applicationState.applicationState)
             this.setState({
                 loginModalShown: state.applicationState.toggleLoginModal,
+                signUpModalShown:  state.applicationState.toggleSignupModal,
                 user: state.applicationState.user
             });
         });
     
     }
 
-    showSignInModal() {
+    showSignInModal = () => {
         store.dispatch(toggleLoginModal(true))
+
+    }
+    showSignUpModal() {
+        console.log('here')
+        store.dispatch(toggleSignupModal(true))
 
     }
 
@@ -40,6 +48,7 @@ export default class Navbar extends React.Component {
 
     render() {
         let loginModalShown = this.state.loginModalShown;
+        let signUpModalShown = this.state.signUpModalShown;
         let isConnected = this.state.user && this.state.user !== null;
         let username = isConnected ? `${this.state.user.first_name} ${this.state.user.last_name}` : ''
 
@@ -81,10 +90,10 @@ export default class Navbar extends React.Component {
                                 
                             ) : (
                                     <div className="buttons">
-                                        <a className="button is-primary">
+                                        <a className="button is-primary" onClick={this.showSignUpModal}>
                                             <strong>Sign up</strong>
                                         </a>
-                                        <a className="button is-light" onClick={() => this.showSignInModal()}>
+                                        <a className="button is-light" onClick={this.showSignInModal}>
                                             Log in
                                 </a>
                                     </div>
@@ -96,6 +105,7 @@ export default class Navbar extends React.Component {
 
 
                 <Login isActive={this.state.loginModalShown}></Login>
+                <SignUp isActive={this.state.signUpModalShown}></SignUp>
 
             </nav>
 

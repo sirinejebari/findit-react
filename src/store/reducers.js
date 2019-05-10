@@ -1,4 +1,4 @@
-import { ACTION_SIGNIN, ACTION_TOGGLE_LOGIN } from "./actionTypes";
+import { ACTION_SIGNIN, ACTION_TOGGLE_LOGIN, ACTION_TOGGLE_SIGNUP } from "./actionTypes";
 import { combineReducers } from 'redux'
 
 const initialState = {
@@ -14,6 +14,11 @@ function applicationState(state = {}, action) {
       case ACTION_TOGGLE_LOGIN:
       return  Object.assign({}, state, {
         toggleLoginModal: action.toggleLoginModal
+      })
+
+      case ACTION_TOGGLE_SIGNUP:
+      return  Object.assign({}, state, {
+        toggleSignupModal: action.toggleSignupModal
       })
     default:
       return state
