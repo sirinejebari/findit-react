@@ -5,6 +5,9 @@ import { toggleLoginModal, signIn, toggleSignupModal } from '../../store/actions
 import GoogleAutucomplete from '../google-autocomplete'
 import SignUp from '../signUp';
 import './navbar.css'
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import {Redirect} from 'react-router-dom'
+
 
 export default class Navbar extends React.Component {
     constructor(props) {
@@ -12,12 +15,12 @@ export default class Navbar extends React.Component {
         this.state = {
             user: '',
             loginModalShown: false,
-            signUpModalShown: false
+            signUpModalShown: false,
+            goToAppartHunt: false,
         };
 
         store.subscribe(() => {
             let state = store.getState()
-            console.log('subs', state, state.applicationState.applicationState)
             this.setState({
                 loginModalShown: state.applicationState.toggleLoginModal,
                 signUpModalShown: state.applicationState.toggleSignupModal,
@@ -41,22 +44,43 @@ export default class Navbar extends React.Component {
         store.dispatch(signIn(false))
         localStorage.removeItem('user')
         localStorage.removeItem('access-token')
+    }
 
-
+    goToAppartHuntPage = () => {
+        this.setState({
+            goToAppartHunt: true
+        })
+    }
+    resetGoToApprtHunt = () => {
+        this.setState({
+            goToAppartHunt: false
+        })
     }
 
     render() {
-        let loginModalShown = this.state.loginModalShown;
-        let signUpModalShown = this.state.signUpModalShown;
+        if(this.state.goToAppartHunt ) {
+           if ( window.location.pathname!== '/appart-hunt') {
+            return (
+                <Redirect to={'/appart-hunt'}/>
+                
+            )
+           }
+           
+        } else if (this.state.goToAppartHunt) {
+            console.log('here')
+
+            this.resetGoToApprtHunt()
+        }
+
         let isConnected = this.state.user && this.state.user !== null;
         let username = isConnected ? `${this.state.user.first_name} ${this.state.user.last_name}` : ''
 
         return (
             <nav className="navbar is-primary" role="navigation" aria-label="main navigation">
                 <div className="navbar-brand">
-                    <a className="navbar-item" href="">
-                        Find It
-                    </a>
+                    <Link className="navbar-item" to="/">Find It</Link>
+
+
 
                     <a role="button" className="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
                         <span aria-hidden="true"></span>
@@ -86,9 +110,11 @@ export default class Navbar extends React.Component {
                         <div className="navbar-item">
                             {isConnected ? (
                                 <span className="aligned-section username">  <strong> {username} </strong>
+                                    <Link className="button is-light" to="/appart-hunt">Find It</Link>
+                                
                                     <a className="button is-light" onClick={() => this.signOut()}>
                                         Sign out
-                                </a></span>
+                                </a> </span>
 
                             ) : (
                                     <div className="buttons">

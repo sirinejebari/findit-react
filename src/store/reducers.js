@@ -1,9 +1,7 @@
-import { ACTION_SIGNIN, ACTION_TOGGLE_LOGIN, ACTION_TOGGLE_SIGNUP } from "./actionTypes";
+import { ACTION_SIGNIN, ACTION_TOGGLE_LOGIN, ACTION_TOGGLE_SIGNUP, ACTION_SET_AD_PREVIEW } from "./actionTypes";
 import { combineReducers } from 'redux'
 
-const initialState = {
-  applicationState: {}
-}
+
 
 function applicationState(state = {}, action) {
   switch (action.type) {
@@ -11,13 +9,13 @@ function applicationState(state = {}, action) {
       return Object.assign({}, state, {
         user: action.user
       })
-      case ACTION_TOGGLE_LOGIN:
-      return  Object.assign({}, state, {
+    case ACTION_TOGGLE_LOGIN:
+      return Object.assign({}, state, {
         toggleLoginModal: action.toggleLoginModal
       })
 
-      case ACTION_TOGGLE_SIGNUP:
-      return  Object.assign({}, state, {
+    case ACTION_TOGGLE_SIGNUP:
+      return Object.assign({}, state, {
         toggleSignupModal: action.toggleSignupModal
       })
     default:
@@ -25,21 +23,21 @@ function applicationState(state = {}, action) {
   }
 }
 
-// function toggleModaleState(state = false, action) {
-//   switch (action.type) {
-
-    
-      
-
-//     default:
-//       return state
-//   }
-// }
-
+function mapState(state = {}, action) {
+  switch (action.type) {
+    case ACTION_SET_AD_PREVIEW:
+      return Object.assign({}, state, {
+        adDetails: action.adDetails
+      })
+    default:
+      return state
+  }
+}
 
 
 const findItApp = combineReducers({
-  applicationState
+  applicationState,
+  mapState
 })
 
 export default findItApp
