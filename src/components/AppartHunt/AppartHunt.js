@@ -1,7 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 import { store } from '../../store/store'
-
+import './AppartHunt.scss'
 export default class AppartHunt extends React.Component {
 
     constructor(props) {
@@ -58,21 +58,21 @@ export default class AppartHunt extends React.Component {
 
     render() {
         let listOfAds = [];
-        this.state.ads.map(ad => {
+        this.state.ads.map((ad, index) => {
             return listOfAds.push(
-                <tr>
+                <tr key={'ad'+index}>
                     <td>{ad.user.first_name}</td>
                     <td><a target="_blank" href={ad.link}>{ad.link.substr(0, 40)}...</a></td>
-                    <td>{ad.status === 'PENDING' ? ad.user.id === (this.state.user && this.state.user.id) ? ad.status : <div>
-                        <button className="is-success">ok</button>
-                        <button className="is-danger">KO</button>
+                    <td>{ad.status === 'PENDING' ? ad.user.id === (this.state.user && this.state.user.id) ? ad.status : <div className="pending-buttons">
+                        <button className="button is-success"><i className="fas fa-check"></i></button>
+                        <button className="button is-danger"><i className="fas fa-times"></i></button>
                     </div> : ad.status}</td>
                 </tr>
             )
         })
         return (<div>
             <div className="list">
-                <button className="button" click={this.showAddNewDisalog}> Add To WishList</button>
+                <button className="button" onClick={this.showAddNewDisalog}> Add To WishList</button>
                 <table className="table is-fullwidth is-striped is-hoverable">
                     <thead>
                         <tr>
