@@ -2,102 +2,88 @@ import React from 'react'
 import axios from 'axios'
 import { store } from '../../store/store'
 import './AppartHunt.scss'
+import List from './List/List'
 export default class AppartHunt extends React.Component {
 
     constructor(props) {
         super(props)
         this.state = {
-            ads: [{
-                user: 'Majed',
-                link: 'https://l.facebook.com/l.php?u=https%3A%2F%2Fwww.bienici.com%2Fannonce%2Flocation%2Fissy-les-moulineaux%2Fappartement%2F2pieces%2Fimmo-facile-31946283%3Fq%3D%252Frecherche%252Flocation%252Fissy-les-moulineaux-92130%253Fsurface-min%253D40%2526surface-max%253D55%2526balcon-ou-terrasse%253Doui%2526parking%253Doui%2526non-meuble%253Doui%26fbclid%3DIwAR0nmDVHXNmkrXGIEVRFy0evkQI--HH85y2ZaPHaMccfr7v62zMcBhO6_7I&h=AT2PpHwAVmEkVAKcaUNgSdBFlaVYLLXkJnSOmlYInuBw9vU3DGe1w7veixTkXmnRu_W3dtLBdtHSsDYJlqEYyq0mPDmyVlIRpdc7CFb-oSjjzj0hXj_hGIWXZazpKe7DMsBl4A',
-                status: 'PENDING'
-            }],
+            lists: [],
             showAddDialog: false,
-            link: null,
+            name: null,
             user: null
         }
     }
 
     componentWillMount() {
-        this.fetchAds()
+        this.fetchLists()
     }
 
 
-    fetchAds = () => {
-        axios.get('http://ec2-35-180-189-63.eu-west-3.compute.amazonaws.com/ads/apt-hunt').then(data => {
+    fetchLists = () => {
+        axios.get('http://ec2-35-180-189-63.eu-west-3.compute.amazonaws.com/apt-hunt/apt-hunt-list-by-user').then(data => {
+            let results = data.data.results;
             this.setState({
-                ads: data.data.results,
+                lists: results,
                 user: store.getState().applicationState.user
             })
         }).catch(err => {
-            alert(err)
+            console.log(err)
         })
     }
 
-    showAddNewDisalog = () => {
+    
+
+    toggleAddNewDisalog = () => {
         this.setState({
-            showAddDialog: true
+            showAddDialog: !this.state.showAddDialog
         })
     }
 
     addNew = () => {
-        axios.post('http://ec2-35-180-189-63.eu-west-3.compute.amazonaws.com/ads/apt-hunt', {
-            link: this.state.link,
-            user: this.state.user
+        axios.post('http://ec2-35-180-189-63.eu-west-3.compute.amazonaws.com/apt-hunt/apt-hunt-list', {
+            name: this.state.name,
+
         }).then(() => {
-            this.fetchAds()
+            this.toggleAddNewDisalog()
+            this.fetchLists()
         }).catch((err) => console.log('error', err))
 
     }
 
     linkChange = (e) => {
         this.setState({
-            link: e.target.value
+            name: e.target.value
         })
     }
 
     render() {
         let listOfAds = [];
-        this.state.ads.map((ad, index) => {
+        this.state.lists.map((ad, index) => {
             return listOfAds.push(
-                <tr key={'ad'+index}>
-                    <td>{ad.user.first_name}</td>
-                    <td><a target="_blank" href={ad.link}>{ad.link.substr(0, 40)}...</a></td>
-                    <td>{ad.status === 'PENDING' ? ad.user.id === (this.state.user && this.state.user.id) ? ad.status : <div className="pending-buttons">
-                        <button className="button is-success"><i className="fas fa-check"></i></button>
-                        <button className="button is-danger"><i className="fas fa-times"></i></button>
-                    </div> : ad.status}</td>
-                </tr>
+               <List user={this.state.user} className="list-item" key={'wishList'+index} list={ad}></List>
             )
         })
-        return (<div>
-            <div className="list">
-                <button className="button" onClick={this.showAddNewDisalog}> Add To WishList</button>
-                <table className="table is-fullwidth is-striped is-hoverable">
-                    <thead>
-                        <tr>
-                            <th>Posted By</th>
-                            <th>Link</th>
-                            <th>Status</th>
-
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {listOfAds}
-                    </tbody>
-                </table>
+        return (<div className="appart-hunt-component">
+            <div className="card lists">
+                {this.state.showAddDialog ? '' : <button className="button add-new-button " onClick={this.toggleAddNewDisalog}> Add New List</button>}
+                
             </div>
-            <div className="dialog">
+          <div className="userLists">{listOfAds}</div>  
+            {this.state.showAddDialog ? <div className="card dialog">
 
                 <div className="field">
-                    <label className="label">Ad Link</label>
+                    <label className="label">Name</label>
                     <div className="control">
-                        <input className="input" type="text" placeholder="www.google.com..." onChange={(e) => this.linkChange(e)} />
+                        <input className="input" type="text" placeholder="New list" onChange={(e) => this.linkChange(e)} />
                     </div>
                 </div>
-                <button className="button is-primary" onClick={() => this.addNew()}>Submit</button>
+                <div className="dialog-actions">
+                    <button className="button is-primary" onClick={() => this.addNew()}>Submit</button>
+                    <button className="button is-secondary" onClick={() => this.toggleAddNewDisalog()}>Cancel</button>
 
-            </div>
+                </div>
+            </div> : ''}
         </div>)
     }
 }

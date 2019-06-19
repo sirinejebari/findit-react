@@ -1,0 +1,36 @@
+.card {
+  margin-bottom: 16px;
+  .subtitle{
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      width: 100%;
+      text-align: start;
+      padding: 8px;
+      .add-new{
+
+      }
+  }
+  .nothing-here{
+      padding: 16px;
+      font-size: small;
+      display: flex;
+      width: 100%;
+      justify-content: center;
+      align-items: center;
+      button{
+          margin-left: 8px
+      }
+  
+  }
+  .modal{
+      .control{
+        width: 100%;
+      }
+      .modal-actions{
+          .is-link{
+              margin-right: 8px
+          }
+      }
+  }
+}

@@ -110,7 +110,7 @@ export default class Navbar extends React.Component {
                         <div className="navbar-item">
                             {isConnected ? (
                                 <span className="aligned-section username">  <strong> {username} </strong>
-                                    <Link className="button is-light" to="/appart-hunt">Find It</Link>
+                                    <Link className="button is-light" to="/appart-hunt">Search Lists</Link>
                                 
                                     <a className="button is-light" onClick={() => this.signOut()}>
                                         Sign out
