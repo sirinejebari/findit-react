@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import {
   signIn
@@ -27,6 +27,7 @@ library.add(faSearch)
 
 
 function App() {
+  const [isConnected, setConnectedState] = useState(false);
   useEffect(() => {
     // Update the document title using the browser API
     if (!!localStorage.getItem('user')) {
@@ -34,6 +35,7 @@ function App() {
     }
 
     if (!!localStorage.getItem('access-token')) {
+      setConnectedState(true)
       axios.interceptors.request.use(function (config) {
         config.headers['x-access-token'] =  localStorage.getItem('access-token');
     
@@ -47,14 +49,14 @@ function App() {
     <div className="App">
       <div className="app-body">
 
-        <Router>
+       {isConnected ? <Router>
           <Navbar></Navbar>
           <Route exact path="/" component={Home} />
           <Route exact path="/home" component={Home} />
           <Route exact path="/ad-details/:id" component={AdPAge} />
           <Route exact path="/appart-hunt" component={AppartHunt} />
           
-        </Router>
+        </Router> :'Must Sign In'}
       </div>
     </div>
   );

@@ -6,7 +6,9 @@ export default class List extends React.Component {
         super(props)
         this.state = {
             isDialogActive: false,
+            isShareDialogActive: false,
             link: null,
+            email: null,
             ads: [],
             totalAds: 0
         }
@@ -16,12 +18,23 @@ export default class List extends React.Component {
         this.setState({
             isDialogActive: !this.state.isDialogActive
         })
+    }
 
+    toggleIsShareDialogActive = () => {
+        this.setState({
+            isShareDialogActive: !this.state.isShareDialogActive
+        })
     }
 
     handleUpdateLink = (e) => {
         this.setState({
             link: e.target.value
+        })
+    }
+
+    handleUpdateEmail = (e) => {
+        this.setState({
+            email: e.target.value
         })
     }
     componentWillMount() {
@@ -53,9 +66,19 @@ export default class List extends React.Component {
 
     }
 
+    shareList = () => {
+
+        axios.put(`http://ec2-35-180-189-63.eu-west-3.compute.amazonaws.com/apt-hunt/add-contributer/${this.props.list.elementId}`, {
+            email: this.state.email,
+            list: this.props.list
+        }).then(() => console.log('invitation sent!'), err => console.log(err))
+
+
+    }
+
     deleteItemFromList = (ad) => {
         axios.delete(`http://ec2-35-180-189-63.eu-west-3.compute.amazonaws.com/apt-hunt/apt-hunt/${ad.elementId}`)
-        .then(() => this.fetchItemsInList(), err => console.log(err))
+            .then(() => this.fetchItemsInList(), err => console.log(err))
     }
     render() {
         let list = [];
@@ -69,7 +92,7 @@ export default class List extends React.Component {
                             <button className="button is-success"><i className="fas fa-check"></i></button>
                             <button className="button is-danger"><i className="fas fa-times"></i></button>
                         </div> : ad.status}</td>
-                        <td><button onClick={() => {this.deleteItemFromList(ad)}} className="button is-small is-danger"><i className="fas fa-times"></i></button></td>
+                        <td><button onClick={() => { this.deleteItemFromList(ad) }} className="button is-small is-danger"><i className="fas fa-times"></i></button></td>
                     </tr>
                 )
             })
@@ -79,7 +102,10 @@ export default class List extends React.Component {
             <div className="card">
                 <div className="subtitle">
                     <div>{this.props.list.name} ({this.state.totalAds} items)</div>
-                    <div className="add-new"><button onClick={() => this.toggleIsDialogActive()} className="button is-small is-primary"><i class="fas fa-plus"></i></button></div>
+                    <div className="add-new">
+                    <button onClick={() => this.toggleIsDialogActive()} className="button is-small is-primary"><i className="fas fa-plus"></i></button>
+                    <button onClick={() => this.toggleIsShareDialogActive()} className="button is-small is-info"><i className="fas fa-share-alt"></i></button>
+                    </div>
 
                 </div>
 
@@ -119,6 +145,27 @@ export default class List extends React.Component {
                             <div className="control modal-actions level-item has-text-centered">
                                 <button className="button is-link" onClick={this.addToList}>Add</button>
                                 <button className="button is-secondary" onClick={this.toggleIsDialogActive}>Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className={"modal " + (this.state.isShareDialogActive ? 'is-active' : '')}>
+                    <div onClick={() => { this.toggleIsShareDialogActive() }} className="modal-background"></div>
+                    <div className="modal-content">
+                        <div className="box">
+                            <div className="field is-horizontal">
+                                <div className="field-label is-normal">
+                                    <label className="label">Email</label>
+                                </div>
+                                <div className="control">
+                                    <input className="input" type="text" placeholder="" onChange={(e) => this.handleUpdateEmail(e)} />
+                                </div>
+                            </div>
+
+                            <div className="control modal-actions level-item has-text-centered">
+                                <button className="button is-link" onClick={this.shareList}>Add</button>
+                                <button className="button is-secondary" onClick={this.toggleIsShareDialogActive}>Cancel</button>
                             </div>
                         </div>
                     </div>

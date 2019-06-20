@@ -44,6 +44,9 @@ export default class Navbar extends React.Component {
         store.dispatch(signIn(false))
         localStorage.removeItem('user')
         localStorage.removeItem('access-token')
+        this.setState({
+            loginModalShown: true
+        })
     }
 
     goToAppartHuntPage = () => {
