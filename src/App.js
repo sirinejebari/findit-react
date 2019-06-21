@@ -37,26 +37,28 @@ function App() {
     if (!!localStorage.getItem('access-token')) {
       setConnectedState(true)
       axios.interceptors.request.use(function (config) {
-        config.headers['x-access-token'] =  localStorage.getItem('access-token');
-    
+        config.headers['x-access-token'] = localStorage.getItem('access-token');
+
         return config;
-    });
+      });
     }
-    
+
   });
   return (
 
     <div className="App">
       <div className="app-body">
-
-       {isConnected ? <Router>
+        <Router>
           <Navbar></Navbar>
-          <Route exact path="/" component={Home} />
-          <Route exact path="/home" component={Home} />
-          <Route exact path="/ad-details/:id" component={AdPAge} />
-          <Route exact path="/appart-hunt" component={AppartHunt} />
-          
-        </Router> :'Must Sign In'}
+          {isConnected ?
+            <div>
+              <Route exact path="/" component={Home} />
+              <Route exact path="/home" component={Home} />
+              <Route exact path="/ad-details/:id" component={AdPAge} />
+              <Route exact path="/appart-hunt" component={AppartHunt} />
+            </div>
+            : 'Must Sign In'}
+        </Router>
       </div>
     </div>
   );
