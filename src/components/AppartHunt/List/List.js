@@ -67,19 +67,30 @@ export default class List extends React.Component {
     }
 
     shareList = () => {
-
         axios.put(`http://ec2-35-180-189-63.eu-west-3.compute.amazonaws.com/apt-hunt/add-contributer/${this.props.list.elementId}`, {
             email: this.state.email,
             list: this.props.list
         }).then(() => console.log('invitation sent!'), err => console.log(err))
-
-
     }
 
     deleteItemFromList = (ad) => {
         axios.delete(`http://ec2-35-180-189-63.eu-west-3.compute.amazonaws.com/apt-hunt/apt-hunt/${ad.elementId}`)
             .then(() => this.fetchItemsInList(), err => console.log(err))
     }
+
+    approveOrDecline = (ad, approve) => {
+        axios.put(`http://ec2-35-180-189-63.eu-west-3.compute.amazonaws.com/apt-hunt/${ad.elementId}`, {
+            ...ad,
+            status: approve ? 'APPROVED' : 'DECLINED'
+        }).then(() => {
+            console.log('Status changed!');
+            setTimeout(() => {
+                this.fetchItemsInList()
+                    
+            }, 1000)
+        }, err => console.log(err))
+    }
+
     render() {
         let list = [];
         if (this.state.ads) {
@@ -89,8 +100,8 @@ export default class List extends React.Component {
                         <td>{ad.user.first_name}</td>
                         <td><a target="_blank" href={ad.link}>{ad.link.substr(0, 40)}...</a></td>
                         <td>{ad.status === 'PENDING' ? ad.user.id === (this.props.user && this.props.user.id) ? ad.status : <div className="pending-buttons">
-                            <button className="button is-success"><i className="fas fa-check"></i></button>
-                            <button className="button is-danger"><i className="fas fa-times"></i></button>
+                            <button onClick={() => this.approveOrDecline(ad, true)} className="button is-success"><i className="fas fa-check"></i></button>
+                            <button onClick={() => this.approveOrDecline(ad, false)} className="button is-danger"><i className="fas fa-times"></i></button>
                         </div> : ad.status}</td>
                         <td><button onClick={() => { this.deleteItemFromList(ad) }} className="button is-small is-danger"><i className="fas fa-times"></i></button></td>
                     </tr>
@@ -103,8 +114,9 @@ export default class List extends React.Component {
                 <div className="subtitle">
                     <div>{this.props.list.name} ({this.state.totalAds} items)</div>
                     <div className="add-new">
-                    <button onClick={() => this.toggleIsDialogActive()} className="button is-small is-primary"><i className="fas fa-plus"></i></button>
-                    <button onClick={() => this.toggleIsShareDialogActive()} className="button is-small is-info"><i className="fas fa-share-alt"></i></button>
+                        <button onClick={() => this.toggleIsDialogActive()} className="button is-small is-primary"><i className="fas fa-plus"></i></button>
+                        {this.props.user.elementId === this.props.list.ownerId ?
+                            <button onClick={() => this.toggleIsShareDialogActive()} className="button is-small is-info"><i className="fas fa-share-alt"></i></button> : ''}
                     </div>
 
                 </div>

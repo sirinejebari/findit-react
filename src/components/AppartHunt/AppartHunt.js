@@ -9,6 +9,7 @@ export default class AppartHunt extends React.Component {
         super(props)
         this.state = {
             lists: [],
+            listsSharedWithUser: [],
             showAddDialog: false,
             name: null,
             user: null
@@ -16,7 +17,13 @@ export default class AppartHunt extends React.Component {
     }
 
     componentWillMount() {
-        this.fetchLists()
+        this.setState({
+            user: store.getState().applicationState.user
+        }, () => {
+            this.fetchLists();
+            this.fetchListsSharedWithMe()
+        })
+
     }
 
 
@@ -24,15 +31,26 @@ export default class AppartHunt extends React.Component {
         axios.get('http://ec2-35-180-189-63.eu-west-3.compute.amazonaws.com/apt-hunt/apt-hunt-list-by-user').then(data => {
             let results = data.data.results;
             this.setState({
-                lists: results,
-                user: store.getState().applicationState.user
+                lists: results
             })
         }).catch(err => {
             console.log(err)
         })
     }
 
-    
+    fetchListsSharedWithMe = () => {
+        axios.get(`http://ec2-35-180-189-63.eu-west-3.compute.amazonaws.com/apt-hunt/shared-apt-hunt-list/${this.state.user.elementId}`).then(data => {
+            let results = data.data.results;
+            console.log(results)
+            this.setState({
+                listsSharedWithUser: results,
+            })
+        }).catch(err => {
+            console.log(err)
+        })
+    }
+
+
 
     toggleAddNewDisalog = () => {
         this.setState({
@@ -58,18 +76,25 @@ export default class AppartHunt extends React.Component {
     }
 
     render() {
-        let listOfAds = [];
+        let listOfAds =[];
+        let sharedWithUser = [];
         this.state.lists.map((ad, index) => {
             return listOfAds.push(
-               <List user={this.state.user} className="list-item" key={'wishList'+index} list={ad}></List>
+                <List user={this.state.user} className="list-item" key={'wishList' + index} list={ad}></List>
+            )
+        });
+        this.state.listsSharedWithUser.map((ad, index) => {
+            return sharedWithUser.push(
+                <List user={this.state.user} className="list-item" key={'sharedWittMe' + index} list={ad}></List>
             )
         })
         return (<div className="appart-hunt-component">
             <div className="card lists">
                 {this.state.showAddDialog ? '' : <button className="button add-new-button " onClick={this.toggleAddNewDisalog}> Add New List</button>}
-                
+
             </div>
-          <div className="userLists">{listOfAds}</div>  
+            <div className="userLists">{listOfAds}</div>
+            <div className="userLists">{sharedWithUser}</div>
             {this.state.showAddDialog ? <div className="card dialog">
 
                 <div className="field">
